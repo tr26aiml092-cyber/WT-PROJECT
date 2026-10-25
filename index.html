@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudySync - Student Study Planner</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+
+  <!-- App Container -->
+  <div class="app-layout">
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-brand">
+        <h2>StudySync</h2>
+        <p>Plan smarter. Study better.</p>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#dashboard" class="nav-item active" data-page="dashboard">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="#subjects" class="nav-item" data-page="subjects">
+          <span class="nav-icon">📚</span>
+          <span class="nav-label">Subjects</span>
+        </a>
+        <a href="#tasks" class="nav-item" data-page="tasks">
+          <span class="nav-icon">✅</span>
+          <span class="nav-label">Tasks</span>
+        </a>
+        <a href="#timetable" class="nav-item" data-page="timetable">
+          <span class="nav-icon">🕒</span>
+          <span class="nav-label">Timetable</span>
+        </a>
+        <a href="#calendar" class="nav-item" data-page="calendar">
+          <span class="nav-icon">📅</span>
+          <span class="nav-label">Calendar</span>
+        </a>
+        <a href="#exams" class="nav-item" data-page="exams">
+          <span class="nav-icon">📝</span>
+          <span class="nav-label">Exams</span>
+        </a>
+        <a href="#timer" class="nav-item" data-page="timer">
+          <span class="nav-icon">⏱️</span>
+          <span class="nav-label">Timer</span>
+        </a>
+        <a href="#progress" class="nav-item" data-page="progress">
+          <span class="nav-icon">📈</span>
+          <span class="nav-label">Progress</span>
+        </a>
+        <a href="#settings" class="nav-item" data-page="settings">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p id="student-name-display">Student</p>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      
+      <!-- Top Navigation Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="menu-btn" class="icon-btn" aria-label="Toggle navigation menu">☰</button>
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+        <div class="topbar-right">
+          <button id="theme-btn" class="theme-btn" aria-label="Toggle dark mode">🌙 Dark</button>
+        </div>
+      </header>
+
+      <!-- Pages Content Container -->
+      <main class="page-content">
+
+        <!-- 1. DASHBOARD PAGE -->
+        <section id="page-dashboard" class="page-section">
+          <!-- Student Welcome Header -->
+          <div class="dashboard-welcome-header">
+            <div>
+              <h2 id="dash-welcome-text">Welcome back, Student! 👋</h2>
+              <p id="dash-date-text" class="page-subtitle">Today is Loading...</p>
+            </div>
+            <div class="button-row" style="margin-top: 0;">
+              <button class="btn btn-primary btn-sm" onclick="showPage('tasks'); openTaskModal();">+ Add Task</button>
+              <button class="btn btn-secondary btn-sm" onclick="showPage('subjects'); openSubjectModal();">+ Add Subject</button>
+              <button class="btn btn-secondary btn-sm" onclick="showPage('timetable'); openSessionModal();">+ Add Session</button>
+            </div>
+          </div>
+
+          <!-- First-visit Welcome Card -->
+          <div id="welcome-card" class="card welcome-card" style="display: none;">
+            <h3>Welcome to StudySync! 🎓</h3>
+            <p>Get started by loading sample college subjects and tasks, or start with an empty planner.</p>
+            <div class="welcome-buttons">
+              <button id="load-demo-btn" class="btn btn-primary">Load demo data</button>
+              <button id="start-empty-btn" class="btn btn-secondary">Start empty</button>
+            </div>
+          </div>
+
+          <!-- Sample Data Active Notice -->
+          <div id="demo-notice-card" class="card demo-notice-card" style="display: none;">
+            <div class="demo-notice-content">
+              <span>💡 <strong>Sample College Data Active:</strong> You are currently viewing sample courses and assignments.</span>
+              <button id="remove-demo-btn" class="btn btn-secondary btn-sm">Remove Sample Data</button>
+            </div>
+          </div>
+
+          <!-- 4 Stat Cards Row -->
+          <div class="stats-grid">
+            <div class="card stat-card">
+              <span class="stat-label">Planned Today</span>
+              <h2 id="dash-planned-hours">0 hrs</h2>
+              <p class="stat-sub">Scheduled study</p>
+            </div>
+            <div class="card stat-card">
+              <span class="stat-label">Total Tasks</span>
+              <h2 id="dash-total-tasks">0</h2>
+              <p class="stat-sub">All assignments</p>
+            </div>
+            <div class="card stat-card">
+              <span class="stat-label">Completed Tasks</span>
+              <h2 id="dash-completed-tasks">0</h2>
+              <p class="stat-sub">Tasks finished</p>
+            </div>
+            <div class="card stat-card">
+              <span class="stat-label">Pending Tasks</span>
+              <h2 id="dash-pending-tasks">0</h2>
+              <p class="stat-sub">Remaining to do</p>
+            </div>
+          </div>
+
+          <!-- Daily Goal Progress Card -->
+          <div class="card goal-card">
+            <div class="card-header-row">
+              <h3>Today's Study Goal</h3>
+              <span id="dash-goal-text" class="stat-sub">0.0 / 2.0 hrs (0%)</span>
+            </div>
+            <div class="progress-bar-bg" style="height: 10px; margin-top: 8px;">
+              <div id="dash-goal-bar" class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <!-- Weekly Study Bar Chart -->
+          <div class="card weekly-chart-card">
+            <div class="card-header-row">
+              <h3>Weekly Study Hours (Mon - Sun)</h3>
+              <span id="dash-weekly-total" class="badge badge-info">Total: 0 hrs</span>
+            </div>
+            <div id="weekly-chart" class="weekly-bar-chart"></div>
+          </div>
+
+          <!-- 3-Column Preview Grid (Today's Sessions, Next 3 Exams, Next 5 Pending Tasks) -->
+          <div class="dashboard-previews-grid">
+            <!-- Today's Sessions -->
+            <div class="card preview-card">
+              <h3>Today's Sessions</h3>
+              <div id="dash-today-sessions" class="dash-preview-list"></div>
+            </div>
+
+            <!-- Next 3 Exams -->
+            <div class="card preview-card">
+              <h3>Upcoming Exams</h3>
+              <div id="dash-upcoming-exams" class="dash-preview-list"></div>
+            </div>
+
+            <!-- Next 5 Tasks -->
+            <div class="card preview-card">
+              <h3>Pending Tasks</h3>
+              <div id="dash-next-tasks" class="dash-preview-list"></div>
+            </div>
+          </div>
+
+          <!-- Subject-wise Progress Bars Card -->
+          <div class="card course-progress-card">
+            <h3>Subject Progress Overview</h3>
+            <div id="dash-subjects-progress" class="dash-subjects-list"></div>
+          </div>
+        </section>
+
+        <!-- 2. SUBJECTS PAGE -->
+        <section id="page-subjects" class="page-section" style="display: none;">
+          <div class="page-header">
+            <div>
+              <h2>Subjects & Courses</h2>
+              <p class="page-subtitle">Track your subjects and study hour goals</p>
+            </div>
+            <button id="add-subject-btn" class="btn btn-primary">+ Add Subject</button>
+          </div>
+
+          <!-- Subjects List Container -->
+          <div id="subjects-list" class="subjects-grid"></div>
+        </section>
+
+        <!-- 3. TASKS PAGE -->
+        <section id="page-tasks" class="page-section" style="display: none;">
+          <div class="page-header">
+            <div>
+              <h2>Tasks & Assignments</h2>
+              <p class="page-subtitle">Keep track of upcoming homework, projects, and revisions</p>
+            </div>
+            <button id="add-task-btn" class="btn btn-primary">+ Add Task</button>
+          </div>
+
+          <!-- Filter Toolbar -->
+          <div class="card filter-bar">
+            <div class="filter-item search-item">
+              <label for="task-search">Search</label>
+              <input type="text" id="task-search" placeholder="Search tasks by title...">
+            </div>
+            <div class="filter-item">
+              <label for="task-filter-status">Status</label>
+              <select id="task-filter-status">
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="done">Completed</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label for="task-filter-priority">Priority</label>
+              <select id="task-filter-priority">
+                <option value="all">All Priorities</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label for="task-filter-subject">Subject</label>
+              <select id="task-filter-subject">
+                <option value="all">All Subjects</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label for="task-filter-category">Category</label>
+              <select id="task-filter-category">
+                <option value="all">All Categories</option>
+                <option value="Assignment">Assignment</option>
+                <option value="Homework">Homework</option>
+                <option value="Revision">Revision</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label for="task-sort">Sort By</label>
+              <select id="task-sort">
+                <option value="dueDate">Due Date</option>
+                <option value="priority">Priority</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tasks List Container -->
+          <div id="tasks-list" class="tasks-list"></div>
+        </section>
+
+        <!-- 4. TIMETABLE PAGE -->
+        <section id="page-timetable" class="page-section" style="display: none;">
+          <div class="page-header">
+            <div>
+              <h2>Daily Study Timetable</h2>
+              <p class="page-subtitle">Track your planned and completed study sessions</p>
+            </div>
+            <button id="add-session-btn" class="btn btn-primary">+ Add Session</button>
+          </div>
+
+          <!-- Daily Navigation Bar -->
+          <div class="card timetable-toolbar">
+            <div class="date-nav-controls">
+              <button id="timetable-prev-btn" class="btn btn-secondary btn-sm" aria-label="Previous day">◀ Prev Day</button>
+              <input type="date" id="timetable-date-input" aria-label="Select date">
+              <button id="timetable-today-btn" class="btn btn-secondary btn-sm">Today</button>
+              <button id="timetable-next-btn" class="btn btn-secondary btn-sm" aria-label="Next day">Next Day ▶</button>
+            </div>
+            <div class="timetable-summary">
+              <span id="timetable-planned-hours" class="badge badge-info">Planned: 0 hrs</span>
+            </div>
+          </div>
+
+          <!-- Sessions List Container -->
+          <div id="timetable-sessions-list" class="sessions-list"></div>
+        </section>
+
+        <!-- 5. CALENDAR PAGE -->
+        <section id="page-calendar" class="page-section" style="display: none;">
+          <div class="page-header">
+            <div>
+              <h2>Academic Calendar</h2>
+              <p class="page-subtitle">Monthly overview of exams, task deadlines, and study sessions</p>
+            </div>
+          </div>
+
+          <!-- Month Controls & Legend -->
+          <div class="card calendar-toolbar">
+            <div class="cal-nav-controls">
+              <button id="cal-prev-btn" class="btn btn-secondary btn-sm">◀ Prev</button>
+              <h3 id="cal-month-title">October 2026</h3>
+              <button id="cal-today-btn" class="btn btn-secondary btn-sm">This Month</button>
+              <button id="cal-next-btn" class="btn btn-secondary btn-sm">Next ▶</button>
+            </div>
+            <div class="cal-legend">
+              <span class="legend-item"><span class="legend-dot dot-exam"></span> Exams</span>
+              <span class="legend-item"><span class="legend-dot dot-task"></span> Task Deadlines</span>
+              <span class="legend-item"><span class="legend-dot dot-session"></span> Sessions</span>
+            </div>
+          </div>
+
+          <!-- Calendar Grid Card -->
+          <div class="card calendar-card">
+            <div class="calendar-grid-header">
+              <div>Mon</div>
+              <div>Tue</div>
+              <div>Wed</div>
+              <div>Thu</div>
+              <div>Fri</div>
+              <div>Sat</div>
+              <div>Sun</div>
+            </div>
+            <div id="calendar-grid" class="calendar-grid"></div>
+          </div>
+
+          <!-- Selected Day Details Panel -->
+          <div class="card cal-details-panel">
+            <div class="cal-details-header">
+              <h3 id="cal-selected-date-title">Items for Date</h3>
+              <div class="button-row" style="margin-top: 0;">
+                <button id="cal-add-session-btn" class="btn btn-secondary btn-sm">+ Add Session</button>
+                <button id="cal-add-exam-btn" class="btn btn-secondary btn-sm">+ Add Exam</button>
+              </div>
+            </div>
+            <div id="cal-day-items-list" class="cal-day-items"></div>
+          </div>
+        </section>
+
+        <!-- 6. EXAMS PAGE -->
+        <section id="page-exams" class="page-section" style="display: none;">
+          <div class="page-header">
+            <div>
+              <h2>Upcoming Exams</h2>
+              <p class="page-subtitle">Track midterms, viva dates, and revision countdowns</p>
+            </div>
+            <button id="add-exam-btn" class="btn btn-primary">+ Add Exam</button>
+          </div>
+
+          <!-- Exams List Container -->
+          <div id="exams-list" class="exams-grid"></div>
+        </section>
+
+        <!-- 7. TIMER PAGE -->
+        <section id="page-timer" class="page-section" style="display: none;">
+          <div class="page-header">
+            <div>
+              <h2>Focus Timer</h2>
+              <p class="page-subtitle">Deep study intervals with auto-logging</p>
+            </div>
+          </div>
+
+          <div class="card timer-card">
+            <!-- Mode Selector -->
+            <div class="timer-modes">
+              <button id="timer-mode-focus" class="btn btn-primary">Focus (25 min)</button>
+              <button id="timer-mode-break" class="btn btn-secondary">Break (5 min)</button>
+              <button id="timer-mode-test" class="btn btn-secondary btn-sm" title="Quick 1 minute test mode">1 min Test</button>
+            </div>
+
+            <!-- Subject Selector -->
+            <div class="form-group timer-subject-group">
+              <label for="timer-subject-select">Study Subject (Optional):</label>
+              <select id="timer-subject-select">
+                <option value="">General Study</option>
+              </select>
+            </div>
+
+            <!-- Timer Display -->
+            <div class="timer-display-box">
+              <h1 id="timer-display" class="timer-clock">25:00</h1>
+              <div class="progress-bar-bg timer-bar">
+                <div id="timer-progress" class="progress-bar-fill" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <!-- Timer Action Controls -->
+            <div class="timer-controls">
+              <button id="timer-start-btn" class="btn btn-primary btn-lg">Start</button>
+              <button id="timer-pause-btn" class="btn btn-secondary btn-lg" style="display: none;">Pause</button>
+              <button id="timer-resume-btn" class="btn btn-primary btn-lg" style="display: none;">Resume</button>
+              <button id="timer-reset-btn" class="btn btn-secondary btn-lg">Reset</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. PROGRESS PAGE -->
+        <section id="page-progress" class="page-section" style="display: none;">
+          <div class="page-header">
+            <div>
+              <h2>Study Progress &amp; Analytics</h2>
+              <p class="page-subtitle">Track completion rates, total study hours, and consecutive streaks</p>
+            </div>
+          </div>
+
+          <!-- Progress Metrics Grid (5 cards) -->
+          <div class="stats-grid progress-stats-grid">
+            <div class="card stat-card">
+              <span class="stat-label">Completed Tasks</span>
+              <h2 id="prog-completed-tasks">0</h2>
+              <p class="stat-sub">Assignments marked completed</p>
+            </div>
+            <div class="card stat-card">
+              <span class="stat-label">Pending Tasks</span>
+              <h2 id="prog-pending-tasks">0</h2>
+              <p class="stat-sub">Tasks awaiting completion</p>
+            </div>
+            <div class="card stat-card">
+              <span class="stat-label">Completion Rate</span>
+              <h2 id="prog-completion-rate">0%</h2>
+              <p class="stat-sub">Percentage of all tasks finished</p>
+            </div>
+            <div class="card stat-card">
+              <span class="stat-label">Total Hours Studied</span>
+              <h2 id="prog-total-hours">0 hrs</h2>
+              <p class="stat-sub">All-time completed study duration</p>
+            </div>
+            <div class="card stat-card">
+              <span class="stat-label">Study Streak</span>
+              <h2 id="prog-study-streak">0 days</h2>
+              <p class="stat-sub">Consecutive days with study sessions</p>
+            </div>
+          </div>
+
+          <!-- Subject Hours Breakdown Card -->
+          <div class="card course-progress-card">
+            <h3>Hours Studied by Subject</h3>
+            <p class="page-subtitle" style="margin-bottom: 14px;">Hours spent compared against course goals</p>
+            <div id="prog-subject-bars" class="dash-subjects-list"></div>
+          </div>
+        </section>
+
+        <!-- 9. SETTINGS PAGE -->
+        <section id="page-settings" class="page-section" style="display: none;">
+          <div class="page-header">
+            <div>
+              <h2>Settings &amp; Data</h2>
+              <p class="page-subtitle">Personalize your planner and manage offline data backups</p>
+            </div>
+          </div>
+
+          <!-- Profile & Preferences Card -->
+          <div class="card settings-card">
+            <h3>Student Preferences</h3>
+            <form id="settings-form" onsubmit="return false;" style="margin-top: 14px;">
+              <div class="form-group">
+                <label for="set-name-input">Student Display Name</label>
+                <input type="text" id="set-name-input" placeholder="e.g. Alex" required>
+              </div>
+              <div class="form-group">
+                <label for="set-goal-input">Daily Study Goal (Hours)</label>
+                <input type="number" id="set-goal-input" min="0.5" max="16" step="0.5" value="2" required>
+              </div>
+              <div class="form-group">
+                <label for="set-theme-select">Interface Theme</label>
+                <select id="set-theme-select">
+                  <option value="light">Light Lavender Mode</option>
+                  <option value="dark">Deep Charcoal Dark Mode</option>
+                </select>
+              </div>
+              <div class="button-row">
+                <button type="button" id="save-settings-btn" class="btn btn-primary">Save Preferences</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Data Portability Card -->
+          <div class="card settings-card">
+            <h3>Data Backup &amp; Portability</h3>
+            <p class="stat-sub" style="margin: 8px 0 14px;">All your study data is saved locally in this browser storage. Export a JSON backup to save your progress or move between computers.</p>
+            <div class="button-row">
+              <button type="button" id="export-data-btn" class="btn btn-secondary">📥 Export Backup (.json)</button>
+              <input type="file" id="import-file-input" accept=".json" style="display: none;">
+              <button type="button" id="import-data-btn" class="btn btn-secondary">📤 Import Backup (.json)</button>
+            </div>
+          </div>
+
+          <!-- Danger Zone Card -->
+          <div class="card settings-card settings-danger-card">
+            <h3 style="color: var(--danger);">Danger Zone</h3>
+            <p class="stat-sub" style="margin: 8px 0 14px;">Permanently clear all subjects, tasks, sessions, and exams from this browser.</p>
+            <button type="button" id="clear-data-btn" class="btn btn-danger">⚠️ Clear All Planner Data</button>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Reusable Modal Dialog -->
+  <div id="modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Modal Title</h3>
+        <button id="modal-close-btn" class="icon-btn close-btn" aria-label="Close modal">&times;</button>
+      </div>
+      <div id="modal-body" class="modal-body">
+        <!-- Injected via JavaScript form builder -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Box -->
+  <div id="toast" class="toast-box" style="display: none;"></div>
+
+  <!-- Plain JavaScript (at bottom of body) -->
+  <script src="js/app.js"></script>
+</body>
+</html>

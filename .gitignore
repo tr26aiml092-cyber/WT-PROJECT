@@ -1,0 +1,10 @@
+# Documentation & Generated Reports
+PROJECT_REPORT.md
+PROJECT_REPORT.pdf
+report_print.html
+screenshots/
+
+# OS & Editor Files
+.DS_Store
+Thumbs.db
+*.log
